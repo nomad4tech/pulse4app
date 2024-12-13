@@ -21,7 +21,6 @@ public class PulseService {
     public void pulse() {
         Pulse response = new Pulse();
         response.setSystemStats(statsFetcher.gatherSystemMetrics());
-        response.setIp(ipChecker.getIp());
         response.setCheckAppId(appConfig.getCheckAppId());
         response.setAlertTries(appConfig.getAlertTries());
         response.setCheckTries(appConfig.getCheckTries());
