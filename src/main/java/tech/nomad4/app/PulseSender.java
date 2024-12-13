@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tech.nomad4.model.Pulse;
+import tech.nomad4.model.PulseResponse;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,11 +21,13 @@ public class PulseSender {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void pulse(String url, Map<String, String> headers, Pulse response) {
+    private boolean connected = false;
+
+    public void pulse(String url, Map<String, String> headers, Pulse pulse) {
 
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .POST(HttpRequest.BodyPublishers.ofString(getJson(response)))
+                .POST(HttpRequest.BodyPublishers.ofString(getJson(pulse)))
                 .header("Content-Type", "application/json");
 
         if (headers != null)
@@ -34,8 +37,16 @@ public class PulseSender {
 
         try {
             HttpResponse<String> resp =  httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            checkStatus(url, resp);
-        } catch (Exception e)  {
+            tryCheckStatus(resp);
+            PulseResponse pr = objectMapper.readValue(resp.body(), PulseResponse.class);
+
+            // TODO can be null, rework for check and update connection status
+            if (pr != null && !connected) {
+                log.info("Listener Connected: {}", url);
+                connected = true;
+            }
+        } catch (Exception e) {
+            connected = false;
             log.error("Request on {} failed with message: {}", url, e.getMessage());
         }
     }
@@ -50,10 +61,10 @@ public class PulseSender {
         return json;
     }
 
-    private static void checkStatus(String url, HttpResponse<String> resp) {
+    private void tryCheckStatus(HttpResponse<String> resp) {
         int statusCode = resp.statusCode();
         if (statusCode < 200 || statusCode >= 300) {
-            log.error("Request on {} failed with status code: {}", url, statusCode);
+            throw new RuntimeException("Request status code:" + statusCode);
         }
     }
 
