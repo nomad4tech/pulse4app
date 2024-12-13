@@ -1,8 +1,6 @@
 package tech.nomad4;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,37 +8,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.Set;
 
 @Getter
 @Setter
 @ToString
-@Validated
 @Configuration
-@Valid
 @ConfigurationProperties("pulse4app")
 public class AppConfig {
 
-    @NotNull(message = "bitDelaySeconds cannot be null")
-    @Min(value = 10, message = "bitDelaySeconds must be greater than or equal to 10 seconds")
     private Integer bitDelaySeconds;
 
-    @NotEmpty(message = "listenerUrl cannot be blank")
-    @Pattern(regexp = "^(http|https)://.*$", message = "listenerUrl must start with 'http://' or 'https://'")
     private String listenerUrl;
 
-    @NotBlank(message = "checkAppId cannot be blank")
     private String checkAppId;
 
-    @Min(value = 1, message = "checkTries must be greater than or equal to 1")
     private Integer checkTries;
 
-    @Min(value = 1, message = "alertTries must be greater than or equal to 1")
     private Integer alertTries;
 
-    @Min(value = 10, message = "checkSilentSeconds must be greater than or equal to 10 seconds")
     private Integer checkSilentSeconds;
 
     // TODO clarify with validation issue in main application (annotation don't work)
@@ -99,7 +86,7 @@ public class AppConfig {
 
 
         if (!cwa.isEmpty()) {
-            Class<? extends Set> clazz = cwa.getClass();
+            Class<?> clazz = cwa.iterator().next();
             if (clazz.isAnnotationPresent(EnablePulseService.class)) {
                 EnablePulseService annotation = clazz.getAnnotation(EnablePulseService.class);
                 if (StringUtils.isBlank(listenerUrl))
