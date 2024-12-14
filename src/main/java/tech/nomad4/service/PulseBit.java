@@ -26,7 +26,6 @@ public class PulseBit implements ApplicationRunner {
     }
 
     private void execute() {
-
         while (true) {
             pulseService.pulse();
             pause();
@@ -36,7 +35,7 @@ public class PulseBit implements ApplicationRunner {
     // TODO clarify how to run in independent scheduler
     private void pause() {
         try {
-            Thread.sleep(Duration.ofSeconds(appConfig.getBitDelaySeconds()).toMillis());
+            Thread.sleep(Duration.ofSeconds(appConfig.getBitDelaySec()).toMillis());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

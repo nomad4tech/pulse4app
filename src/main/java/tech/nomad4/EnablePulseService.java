@@ -15,10 +15,11 @@ import java.lang.annotation.Target;
 public @interface EnablePulseService {
 
     String listenerUrl() default "";
-    int bitDelaySeconds() default 60;
-    String checkAppId() default "";
+    int bitDelaySeconds() default 10;
+    String name() default "";
     int alertTries() default 1;
-    int checkTries() default 1;
-    int checkSilentSeconds() default 60;
+    int maxPulseDelaySec() default 1;
+    int alertDelaySec() default 60;
+    boolean reportMe() default false;
 
 }

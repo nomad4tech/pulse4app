@@ -18,19 +18,20 @@ import java.util.Set;
 @ConfigurationProperties("pulse4app")
 public class AppConfig {
 
-    private Integer bitDelaySeconds;
+    private Integer bitDelaySec;
 
     private String listenerUrl;
 
-    private String checkAppId;
-
-    private Integer checkTries;
+    private String name;
 
     private Integer alertTries;
 
-    private Integer checkSilentSeconds;
+    private Integer maxPulseDelaySec;
 
-    // TODO clarify with validation issue in main application (annotation don't work)
+    private Integer alertDelaySec;
+
+    private Boolean reportPulse;
+
     @PostConstruct
     public void validateConfig() {
         handleAnnotation();
@@ -38,10 +39,10 @@ public class AppConfig {
     }
 
     private void validate() {
-        if (bitDelaySeconds < 10)
+        if (bitDelaySec < 10)
             throw new IllegalArgumentException("bitDelaySeconds must be greater than or equal to 10 seconds. " +
-                    "Set it in annotation property @EnablePulseService(bitDelaySeconds) " +
-                    "or in 'application.properties' (pulse4app.bit-delay-seconds).");
+                    "Set it in annotation property @EnablePulseService(bitDelaySeco) " +
+                    "or in 'application.properties' (pulse4app.bit-delay-sec).");
 
         if (listenerUrl == null || listenerUrl.isEmpty())
             throw new IllegalArgumentException("listenerUrl cannot be blank. " +
@@ -53,25 +54,25 @@ public class AppConfig {
                     "Set it in annotation property @EnablePulseService(listenerUrl) " +
                     "or in 'application.properties' (pulse4app.listener-url).");
 
-        if (checkAppId == null || checkAppId.trim().isEmpty())
-            throw new IllegalArgumentException("checkAppId cannot be blank. " +
-                    "Set it in annotation property @EnablePulseService(checkAppId) " +
-                    "or in 'application.properties' (pulse4app.check-app-id).");
-
-        if (checkTries < 1)
-            throw new IllegalArgumentException("checkTries must be greater than or equal to 1. " +
-                    "Set it in annotation property @EnablePulseService(checkTries) " +
-                    "or in 'application.properties' (pulse4app.check-tries).");
+        if (name == null || name.trim().isEmpty())
+            throw new IllegalArgumentException("name cannot be blank. " +
+                    "Set it in annotation property @EnablePulseService(name) " +
+                    "or in 'application.properties' (pulse4app.name).");
 
         if (alertTries < 1)
             throw new IllegalArgumentException("alertTries must be greater than or equal to 1. " +
                     "Set it in annotation property @EnablePulseService(alertTries) " +
                     "or in 'application.properties' (pulse4app.alert-tries).");
 
-        if (checkSilentSeconds < 10)
-            throw new IllegalArgumentException("checkSilentSeconds must be greater than or equal to 10 seconds. " +
-                    "Set it in annotation property @EnablePulseService(checkSilentSeconds) " +
-                    "or in 'application.properties' (pulse4app.check-silent-seconds).");
+        if (maxPulseDelaySec < bitDelaySec + 30)
+            throw new IllegalArgumentException("maxPulseDelaySec must be greater than bitDelaySec (by def = 10) by 30 sec min. " +
+                    "Set it in annotation property @EnablePulseService(maxPulseDelaySec) " +
+                    "or in 'application.properties' (pulse4app.max-pulse-delay-sec).");
+
+        if (alertDelaySec < 60)
+            throw new IllegalArgumentException("alertDelaySec must be greater than or equal to 60 seconds. " +
+                    "Set it in annotation property @EnablePulseService(alertDelaySec) " +
+                    "or in 'application.properties' (pulse4app.alert-delay-sec).");
     }
 
 
@@ -91,16 +92,18 @@ public class AppConfig {
                 EnablePulseService annotation = clazz.getAnnotation(EnablePulseService.class);
                 if (StringUtils.isBlank(listenerUrl))
                     listenerUrl = annotation.listenerUrl();
-                if (StringUtils.isBlank(checkAppId))
-                    checkAppId = annotation.checkAppId();
-                if (checkTries == null)
-                    checkTries = annotation.checkTries();
+                if (StringUtils.isBlank(name))
+                    name = annotation.name();
                 if (alertTries == null)
                     alertTries = annotation.alertTries();
-                if (checkSilentSeconds == null)
-                    checkSilentSeconds = annotation.checkSilentSeconds();
-                if (bitDelaySeconds == null)
-                    bitDelaySeconds = annotation.bitDelaySeconds();
+                if (bitDelaySec == null)
+                    bitDelaySec = annotation.bitDelaySeconds();
+                if (alertDelaySec == null)
+                    alertDelaySec = annotation.alertDelaySec();
+                if (maxPulseDelaySec == null)
+                    maxPulseDelaySec = annotation.maxPulseDelaySec();
+                if (reportPulse == null)
+                    reportPulse = annotation.reportMe();
             }
         }
     }

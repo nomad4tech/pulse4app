@@ -18,14 +18,19 @@ public class PulseService {
     private final IPChecker ipChecker = new IPChecker();
     SystemStatsFetcher statsFetcher = new SystemStatsFetcher();
 
+
     public void pulse() {
-        Pulse response = new Pulse();
-        response.setSystemStats(statsFetcher.gatherSystemMetrics());
-        response.setCheckAppId(appConfig.getCheckAppId());
-        response.setAlertTries(appConfig.getAlertTries());
-        response.setCheckTries(appConfig.getCheckTries());
-        response.setCheckSilentSeconds(appConfig.getCheckSilentSeconds());
-        pulseSender.pulse(appConfig.getListenerUrl(), response);
+        Pulse pulse = new Pulse();
+        pulse.setMessage("");
+        pulse.setName(appConfig.getName());
+        pulse.setAlertTries(appConfig.getAlertTries());
+        pulse.setMaxPulseDelaySec(appConfig.getMaxPulseDelaySec());
+        pulse.setAlertDelaySec(appConfig.getAlertDelaySec());
+        pulse.setReportPulse(appConfig.getReportPulse());
+        pulse.setSystemStats(statsFetcher.gatherSystemMetrics());
+        pulseSender.pulse(appConfig.getListenerUrl(), pulse);
     }
+
+
 
 }
