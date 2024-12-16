@@ -39,6 +39,61 @@ Add the library as a dependency in your `pom.xml`:
 </dependencies>
 ```
 
+#### Note on Docker Configuration
+
+If you are using Docker and encounter issues with accessing the repository, you may need to provide authentication credentials. Create a `settings.xml` file in your Maven configuration directory with the following content:
+
+```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/nomad4tech/pulse4app</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <servers>
+        <server>
+            <id>github</id>
+            <username>YOUR_GITHUB_USERNAME</username>
+            <password>YOUR_GITHUB_TOKEN</password>
+        </server>
+    </servers>
+</settings>
+```
+
+Replace `YOUR_GITHUB_USERNAME` and `YOUR_GITHUB_TOKEN` with your GitHub credentials. This will ensure Docker can properly authenticate and access the required repository.
+[YOUR_GITHUB_TOKEN creation page](https://github.com/settings/tokens)
+
+#### Example how to integrate the Maven settings into your Dockerfile:
+```dockerfile
+# Copy the Maven project files
+COPY pom.xml ./
+COPY settings.xml /root/.m2/settings.xml
+
+RUN mvn dependency:resolve -U 
+```
+
 ### Clone and Install from Source
 
 Alternatively, you can clone the project repository and install it locally using Maven:
@@ -185,7 +240,12 @@ public class SystemStats {
 
 ## Contributing
 **Guidelines:** Contributions are welcome! Please fork the repository, make your changes, and submit pull request with description of your modifications.  
-For questions or collaboration, feel free to reach out at [alex.sav4387@gmail.com](mailto:alex.sav4387@gmail.com), check out my **GitHub** profile: [nomad4tech](https://github.com/nomad4tech), or connect with me on **Telegram**: [@nomad4tech](https://t.me/nomad4tech).
+For questions or collaboration, feel free to reach out at:
+- 📧 alex.sav4387@gmail.com
+- 👨‍💻 GitHub: nomad4tech
+- 📲 Telegram: @nomad4tech
+
+I’m also open to advice — if you have best practices or tips to share, I’d greatly appreciate it!
 
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
