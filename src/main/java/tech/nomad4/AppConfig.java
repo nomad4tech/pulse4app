@@ -105,7 +105,7 @@ public class AppConfig {
                 if (maxPulseDelaySec == null)
                     maxPulseDelaySec = annotation.maxPulseDelaySec();
                 if (reportPulse == null)
-                    reportPulse = annotation.reportMe();
+                    reportPulse = annotation.reportPulse();
                 if (message == null)
                     message = annotation.message();
             }

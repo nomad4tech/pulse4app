@@ -18,9 +18,9 @@ public @interface EnablePulseService {
     int bitDelaySeconds() default 10;
     String name() default "";
     int alertTries() default 1;
-    int maxPulseDelaySec() default 1;
+    int maxPulseDelaySec() default 60;
     int alertDelaySec() default 60;
-    boolean reportMe() default false;
+    boolean reportPulse() default false;
     String message() default "";
 
 }
