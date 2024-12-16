@@ -21,7 +21,7 @@ public class PulseService {
 
     public void pulse() {
         Pulse pulse = new Pulse();
-        pulse.setMessage("");
+        pulse.setMessage(appConfig.getMessage());
         pulse.setName(appConfig.getName());
         pulse.setAlertTries(appConfig.getAlertTries());
         pulse.setMaxPulseDelaySec(appConfig.getMaxPulseDelaySec());

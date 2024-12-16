@@ -32,6 +32,8 @@ public class AppConfig {
 
     private Boolean reportPulse;
 
+    private String message;
+
     @PostConstruct
     public void validateConfig() {
         handleAnnotation();
@@ -104,6 +106,8 @@ public class AppConfig {
                     maxPulseDelaySec = annotation.maxPulseDelaySec();
                 if (reportPulse == null)
                     reportPulse = annotation.reportMe();
+                if (message == null)
+                    message = annotation.message();
             }
         }
     }

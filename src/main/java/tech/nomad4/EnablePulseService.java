@@ -21,5 +21,6 @@ public @interface EnablePulseService {
     int maxPulseDelaySec() default 1;
     int alertDelaySec() default 60;
     boolean reportMe() default false;
+    String message() default "";
 
 }
