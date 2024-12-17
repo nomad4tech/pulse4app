@@ -2,7 +2,6 @@ package tech.nomad4.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tech.nomad4.app.IPChecker;
 import tech.nomad4.app.PulseSender;
 import tech.nomad4.app.SystemStatsFetcher;
 import tech.nomad4.AppConfig;
@@ -15,9 +14,7 @@ public class PulseService {
     private final AppConfig appConfig;
 
     private final PulseSender pulseSender;
-    private final IPChecker ipChecker = new IPChecker();
     SystemStatsFetcher statsFetcher = new SystemStatsFetcher();
-
 
     public void pulse() {
         Pulse pulse = new Pulse();
