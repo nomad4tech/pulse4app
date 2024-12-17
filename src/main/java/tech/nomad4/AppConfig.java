@@ -35,7 +35,7 @@ public class AppConfig {
     private String message;
 
     @PostConstruct
-    public void validateConfig() {
+    private void validateConfig() {
         handleAnnotation();
         validate();
     }
